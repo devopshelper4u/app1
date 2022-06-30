@@ -1,5 +1,5 @@
 {
-    "name": "package-2",
+    "name": "package-1",
     "version": "1.0.0",
     "description": "some desc",
     "main": "index.js",
@@ -11,7 +11,7 @@
     },
     "keywords": [],
     "author": "",
-    "homepage": "https://github.com/devopshelper4u/package-2#readme",
+    "homepage": "https://github.com/devopshelper4u/package-1#readme",
     "dependencies": {
     }
   }
