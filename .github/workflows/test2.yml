@@ -36,12 +36,11 @@ jobs:
           echo -e "Version : $APP_VERSION"
           cd ./repo2
           echo "1"
-          jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config.json
+          jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/config.json
           echo "222"
           git config user.email "devops.helper.4u@gmail.com"
           git config user.name "devopshelper4u"
           echo "3333"
-          git add .
           git commit -m "Updated version as other repo got updated - %s"
           echo "4444"
           git push origin main
