@@ -7,14 +7,15 @@ jobs:
   update-version:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
-    strategy:
-      matrix:
-        node-version: [16.x]
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v3
       with:
         token: ${{ secrets.MY_TOKEN }}
+        node-version: '16.x'
     - run: |
         git config --global user.name 'devopshelper4u'
         git config --global user.email 'devops.helper.4u@gmail.com'
@@ -40,7 +41,6 @@ jobs:
     - run: APP_VERSION=$(jq --raw-output '.version' package.json)
       env:
         NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
-        TEMP_VERSION: "1.0.0"
 
   # Update app version in app-platform
   update-platform:
