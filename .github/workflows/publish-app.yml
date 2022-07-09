@@ -12,14 +12,11 @@ jobs:
       with:
         token: ${{ secrets.MY_TOKEN }}
         node-version: '16.x'
-        app_version: "1.0.0"
-      id: bump_version
     - run: |
         git config --global user.name 'devopshelper4u'
         git config --global user.email 'devops.helper.4u@gmail.com'
         npm version patch -m "[RELEASE] %s"
         git push
-        app_version=$(jq --raw-output '.version' package.json)
   
   create-pkg:
     needs: update-version
@@ -44,18 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
-    - name: Get app version
+    - name: Pull app repo
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.MY_TOKEN }}
-    - run: |
-        APP_VERSION=$(jq --raw-output '.version' package.json)
-        echo -e "App version : $APP_VERSION"
-        
-    - name: Get other repo
+
+    - name: Get platform repo
       uses: actions/checkout@v3
-#      env:
-#        APP_VERSION: ${{ steps.bump_version.outputs.app_version }}
       with:
         token: ${{ secrets.MY_TOKEN }}
         repository: devopshelper4u/app-platform
