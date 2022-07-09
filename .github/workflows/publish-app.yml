@@ -1,4 +1,4 @@
-name: Publish Package & update dependent repos
+name: Publish app & update platform
 on:
   release:
     types: [created]
