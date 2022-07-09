@@ -20,6 +20,7 @@ jobs:
       - name: npm build and publish
         id: setup
         run: |
+          echo $NPM_CONFIG_USERCONFIG
           env >> .env
           echo "Application will be deployed"
           npm ci
