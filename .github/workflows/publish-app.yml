@@ -22,6 +22,7 @@ jobs:
         git push
   
   create-pkg:
+    needs: update-version
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
@@ -31,7 +32,6 @@ jobs:
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'
-    - run: git pull
     - run: cat package.json
     - run: npm ci
     - run: npm publish
@@ -42,6 +42,7 @@ jobs:
 
   # Update app version in app-platform
   update-platform:
+    needs: [update-version, create-pkg]
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
@@ -53,7 +54,6 @@ jobs:
         ref: 'main'
         path: ./repo2
     - run: |
-        APP_VERSION=$(jq --raw-output '.version' package.json)
         echo -e "App version : $APP_VERSION"
         cd ./repo2
         jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/temp_file.json
