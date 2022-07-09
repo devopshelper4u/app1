@@ -4,13 +4,23 @@ on:
     branches: [ "main" ]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
+          
   update-version:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
-#     strategy:
-#       matrix:
-#         node-version: [16.x]
-
     steps:
     - uses: actions/checkout@v3
       with:
@@ -36,8 +46,8 @@ jobs:
         git config --global user.name 'devopshelper4u'
         git config --global user.email 'devops.helper.4u@gmail.com'
         git pull
-    - run: npm ci
-    - run: npm publish
+        npm ci
+        npm publish
     - run: APP_VERSION=$(jq --raw-output '.version' package.json)
       env:
         NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
