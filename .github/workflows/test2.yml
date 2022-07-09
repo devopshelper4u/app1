@@ -36,8 +36,15 @@ jobs:
           echo -e "Version : $APP_VERSION"
           cd ./repo2
           echo "1"
-          jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/config.json
+          jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/temp_file.json
+          echo "aaa"
+          ls -l config
+          rm -rf config/config.json
+          echo "bbbb"
+          ls -l config
+          mv config/temp_file.json config/config.json
           echo "222"
+          ls -l config
           git config user.email "devops.helper.4u@gmail.com"
           git config user.name "devopshelper4u"
           echo "3333"
