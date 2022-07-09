@@ -1,6 +1,6 @@
 {
     "name": "app1",
-    "version": "4.5.10",
+    "version": "4.5.11",
     "description": "some desc",
     "main": "index.js",
     "scripts": {},
