@@ -41,6 +41,7 @@ jobs:
           git config user.email "devops.helper.4u@gmail.com"
           git config user.name "devopshelper4u"
           echo "3333"
+          git add .
           git commit -m "Updated version as other repo got updated - %s"
           echo "4444"
           git push origin main
