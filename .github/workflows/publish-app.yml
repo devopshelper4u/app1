@@ -27,12 +27,12 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
     - uses: actions/checkout@v3
-    # Setup .npmrc file to publish to npm
+      with:
+        token: ${{ secrets.MY_TOKEN }}
     - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'
-        token: ${{ secrets.MY_TOKEN }}
     - run: cat package.json
     - run: npm ci
     - run: npm publish
