@@ -1,41 +1,56 @@
 name: Publish app & update platform
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ "main" ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
-      - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://npm.pkg.github.com'
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
-          
-      # Update app version in app-platform
-      - name: Get other repo
-        env:
-          TEMP_VERSION: "1.0.0"
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.MY_TOKEN }}
-          repository: devopshelper4u/app-platform
-          ref: 'main'
-          path: ./repo2
-      - run: |
-          APP_VERSION=$(jq --raw-output '.version' package.json)
-          echo -e "App version : $APP_VERSION"
-          cd ./repo2
-          jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/temp_file.json
-          rm -rf config/config.json
-          mv config/temp_file.json config/config.json
-          git config user.email "devops.helper.4u@gmail.com"
-          git config user.name "devopshelper4u"
-          git add .
-          git commit -m "Updated version for app 'app1'. New version - $APP_VERSION"
-          git push origin main
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.MY_TOKEN }}
+    - run: |
+        git config --global user.name 'devopshelper4u'
+        git config --global user.email 'devops.helper.4u@gmail.com'
+        npm version patch -m "[RELEASE] %s"
+        git push
+  
+    - uses: actions/checkout@v3
+    # Setup .npmrc file to publish to npm
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+        registry-url: 'https://npm.pkg.github.com'
+    - run: npm ci
+    - run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
+
+    # Update app version in app-platform
+    - name: Get other repo
+      env:
+        TEMP_VERSION: "1.0.0"
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.MY_TOKEN }}
+        repository: devopshelper4u/app-platform
+        ref: 'main'
+        path: ./repo2
+    - run: |
+        APP_VERSION=$(jq --raw-output '.version' package.json)
+        echo -e "App version : $APP_VERSION"
+        cd ./repo2
+        jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/temp_file.json
+        rm -rf config/config.json
+        mv config/temp_file.json config/config.json
+        git config user.email "devops.helper.4u@gmail.com"
+        git config user.name "devopshelper4u"
+        git add .
+        git commit -m "Updated version for app 'app1'. New version - $APP_VERSION"
+        git push origin main
