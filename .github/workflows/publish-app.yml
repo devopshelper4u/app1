@@ -54,7 +54,7 @@ jobs:
         ref: 'main'
         path: ./repo2
     - run: |
-        echo -e "App version : $APP_VERSION"
+        echo -e "App version : ${{ env.APP_VERSION }}"
         cd ./repo2
         jq ".myapps.internalapps.\"@devopshelper4u/app1\".version = \"$APP_VERSION\"" config/config.json > config/temp_file.json
         rm -rf config/config.json
