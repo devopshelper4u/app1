@@ -44,10 +44,18 @@ jobs:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
+    - name: Get app version
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.MY_TOKEN }}
+    - run: |
+        APP_VERSION=$(jq --raw-output '.version' package.json)
+        echo -e "App version : $APP_VERSION"
+        
     - name: Get other repo
       uses: actions/checkout@v3
-      env:
-        APP_VERSION: ${{ steps.bump_version.outputs.app_version }}
+#      env:
+#        APP_VERSION: ${{ steps.bump_version.outputs.app_version }}
       with:
         token: ${{ secrets.MY_TOKEN }}
         repository: devopshelper4u/app-platform
