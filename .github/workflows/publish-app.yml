@@ -4,7 +4,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  update-version:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     strategy:
@@ -15,19 +15,32 @@ jobs:
     - uses: actions/checkout@v3
       with:
         token: ${{ secrets.MY_TOKEN }}
-        node-version: '16.x'
-        registry-url: 'https://npm.pkg.github.com'
     - run: |
         git config --global user.name 'devopshelper4u'
         git config --global user.email 'devops.helper.4u@gmail.com'
         npm version patch -m "[RELEASE] %s"
         git push
-        npm ci
-        npm publish
+  
+  create-pkg:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
+    steps:
+    - uses: actions/checkout@v3
+    # Setup .npmrc file to publish to npm
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+        registry-url: 'https://npm.pkg.github.com'
+    - run: npm ci
+    - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
 
-    # Update app version in app-platform
+  # Update app version in app-platform
+  update-platform:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
+    steps:
     - name: Get other repo
       env:
         TEMP_VERSION: "1.0.0"
