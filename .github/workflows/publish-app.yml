@@ -32,6 +32,7 @@ jobs:
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'
+        token: ${{ secrets.MY_TOKEN }}
     - run: cat package.json
     - run: npm ci
     - run: npm publish
