@@ -12,11 +12,14 @@ jobs:
       with:
         token: ${{ secrets.MY_TOKEN }}
         node-version: '16.x'
+        app_version: "1.0.0"
+      id: bump_version
     - run: |
         git config --global user.name 'devopshelper4u'
         git config --global user.email 'devops.helper.4u@gmail.com'
         npm version patch -m "[RELEASE] %s"
         git push
+        app_version=$(jq --raw-output '.version' package.json)
   
   create-pkg:
     needs: update-version
@@ -34,7 +37,6 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
-          APP_VERSION: "1.0.0"
 
   # Update app version in app-platform
   update-platform:
@@ -44,6 +46,8 @@ jobs:
     steps:
     - name: Get other repo
       uses: actions/checkout@v3
+      env:
+        APP_VERSION: ${{ steps.bump_version.outputs.app_version }}
       with:
         token: ${{ secrets.MY_TOKEN }}
         repository: devopshelper4u/app-platform
