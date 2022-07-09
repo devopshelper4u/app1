@@ -31,10 +31,14 @@ jobs:
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'
+    - run: git pull
+    - run: cat package.json
     - run: npm ci
     - run: npm publish
+    - run: APP_VERSION=$(jq --raw-output '.version' package.json)
       env:
         NODE_AUTH_TOKEN: ${{ secrets.MY_TOKEN }}
+        TEMP_VERSION: "1.0.0"
 
   # Update app version in app-platform
   update-platform:
@@ -42,8 +46,6 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
     - name: Get other repo
-      env:
-        TEMP_VERSION: "1.0.0"
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.MY_TOKEN }}
