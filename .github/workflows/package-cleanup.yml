@@ -19,5 +19,5 @@ jobs:
     steps:
       - uses: actions/delete-package-versions@v3
         with:
-          package-name: 'test-package'
+          package-name: 'app1'
           min-versions-to-keep: 5
