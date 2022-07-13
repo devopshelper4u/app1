@@ -16,19 +16,21 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
+    # Reference: https://github.com/actions/delete-package-versions
     steps:
       - uses: actions/delete-package-versions@v3
         with:
           package-name: ${{ github.event.repository.name }}
-          min-versions-to-keep: 3
-          
+          min-versions-to-keep: 4
+
   cleanup-workflow:
     runs-on: ubuntu-latest
+    # Reference: https://github.com/marketplace/actions/delete-workflow-runs
     steps:
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: 3
-          keep_minimum_runs: 4
+          retain_days: 2
+          keep_minimum_runs: 5
